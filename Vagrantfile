@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vim: set ft=ruby :
 
-GLOBAL_VARS ={local_repo: '10.0.0.2'}
+GLOBAL_VARS ={local_repo: '10.0.2.2'}
 
 MACHINES = {
 
@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
       end
       box.vm.provision "ansible" do |ansible|
         ansible.compatibility_mode = "2.0"
-        ansible.playbook = "ansible/playbook.yml"
+        ansible.playbook = "ansible/playbook.yaml"
         ansible.extra_vars = GLOBAL_VARS.merge(boxconfig[:vars]).merge({host_name: boxname.to_s})
         ansible.host_key_checking = "false"
         ansible.become = "true"
