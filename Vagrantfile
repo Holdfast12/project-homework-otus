@@ -5,10 +5,10 @@ GLOBAL_VARS ={local_repo: '10.0.0.2'}
 
 MACHINES = {
 
-  :monitoring => {
+  :prometheus => {
     :box_name => "almalinux/9",
     :net => [
-      {ip: '192.168.0.1', adapter: 2, netmask: "255.255.255.240"},
+      {ip: '192.168.0.1', adapter: 2, netmask: "255.255.255.240", virtualbox__intnet: "project-net"},
     ],
     :vars => {}
   },
