@@ -1,0 +1,57 @@
+- name: Check for prometheus exists in /home/vagrant/     
+  stat:
+    path: /home/vagrant/prometheus
+  register: p
+
+- name: extract prometheus
+  block:
+
+    - name: Extract prometheus
+      ansible.builtin.unarchive:
+        src: prometheus.tar.gz
+        dest: /home/vagrant/
+        owner: vagrant
+        group: vagrant
+
+    - name: rename prometheus folder
+      ansible.builtin.shell: mv /home/vagrant/prometheus-*/ /home/vagrant/prometheus
+
+  when: p.stat.exists != true
+
+- name: create group "prometheus"
+  ansible.builtin.group:
+    name: prometheus
+    state: present
+
+- name: Add user "prometheus"  
+  user:
+    name: prometheus
+    groups: prometheus
+    shell: /sbin/false
+    create_home: no
+    append: yes
+    comment: "prometheus nologin User"
+    state: present
+
+- name: create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  loop:
+    - /etc/prometheus
+    - /var/lib/prometheus
+
+- name: Copy the binary files
+  copy:
+    src: "{{ item }}"
+    dest: /usr/local/bin
+    owner: prometheus
+    group: prometheus
+    mode: 0755
+    remote_src: yes
+  with_items:
+    - /home/vagrant/prometheus/prometheus
+    - /home/vagrant/prometheus/promtool
